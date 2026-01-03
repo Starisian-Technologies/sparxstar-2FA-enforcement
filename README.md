@@ -61,6 +61,7 @@ composer lint:fix
 
 - [Testing Guide](TESTING.md) - Comprehensive guide for running and writing tests
 - [Plugin Testing Instructions](PLUGIN_TESTING_INSTRUCTIONS.md) - Instructions for plugin developers
+- [Quick Reference](QUICK_REFERENCE.md) - Quick command reference for testing
 
 ## Contributing
 
