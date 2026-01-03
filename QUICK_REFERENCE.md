@@ -46,10 +46,10 @@ composer lint:check
 ./vendor/bin/phpunit
 
 # Specific test file
-./vendor/bin/phpunit tests/Unit/PluginInitializationTest.php
+./vendor/bin/phpunit tests/Unit/EnforcerTest.php
 
 # Specific test method
-./vendor/bin/phpunit --filter testPluginHooksAreRegistered
+./vendor/bin/phpunit --filter test_subscribers_are_locked_to_email_only
 
 # Verbose output
 ./vendor/bin/phpunit --verbose
@@ -66,7 +66,8 @@ tests/
 │   ├── TestCase.php          # Base test class
 │   └── WordPressMocks.php    # WordPress function mocks
 ├── Unit/                      # Unit tests
-└── Integration/               # Integration tests
+│   └── EnforcerTest.php      # Enforcer class tests
+└── Integration/               # Integration tests (empty)
 ```
 
 ## WordPress Mocking Examples

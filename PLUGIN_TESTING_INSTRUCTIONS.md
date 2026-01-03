@@ -56,22 +56,30 @@ Once the main plugin file is added, you'll need to:
 3. **Update test assertions** to match actual plugin behavior
 4. **Run tests** to ensure everything works
 
-### Example: Updating PluginInitializationTest.php
+### Example: Writing Tests for the Enforcer Class
 
-Replace placeholder tests like:
+The `EnforcerTest.php` file contains production-ready tests for the Enforcer class:
 ```php
-public function testPluginHooksAreRegistered(): void
+public function test_subscribers_are_locked_to_email_only()
 {
-    $this->assertTrue(true, 'Placeholder test');
+    $user = Mockery::mock('WP_User');
+    $user->roles = ['subscriber'];
+    $user->ID = 123;
+
+    $current_providers = [];
+    $result = Enforcer::provision_and_restrict_methods($current_providers, $user);
+
+    // Expectation: The system returns ONLY email
+    $this->assertEquals(['Two_Factor_Email'], $result);
 }
 ```
 
-With actual tests:
+When adding new functionality:
 ```php
-public function testPluginHooksAreRegistered(): void
+public function test_new_feature(): void
 {
-    // Include the plugin file
-    require_once __DIR__ . '/../../sparxstar-2fa-enforcement.php';
+    // Include the plugin file or use autoloading
+    // Test your actual plugin functionality
     
     // Test that hooks are registered
     $this->assertTrue(has_action('user_register', 'sparxstar_enforce_2fa'));

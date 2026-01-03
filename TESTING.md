@@ -87,10 +87,10 @@ For more control, you can run PHPUnit directly:
 ./vendor/bin/phpunit
 
 # Run specific test file
-./vendor/bin/phpunit tests/Unit/PluginInitializationTest.php
+./vendor/bin/phpunit tests/Unit/EnforcerTest.php
 
 # Run specific test method
-./vendor/bin/phpunit --filter testPluginHooksAreRegistered
+./vendor/bin/phpunit --filter test_subscribers_are_locked_to_email_only
 
 # Run with verbose output
 ./vendor/bin/phpunit --verbose
@@ -107,16 +107,14 @@ tests/
 │   ├── TestCase.php                # Base test case class
 │   └── WordPressMocks.php          # WordPress mocking utilities
 ├── Unit/                            # Unit tests
-│   ├── PluginInitializationTest.php
-│   └── TwoFactorEnforcementTest.php
-└── Integration/                     # Integration tests
-    └── FullWorkflowTest.php
+│   └── EnforcerTest.php            # Enforcer class tests
+└── Integration/                     # Integration tests (empty - ready for future tests)
 ```
 
 ### Test Types
 
-- **Unit Tests**: Test individual functions and methods in isolation
-- **Integration Tests**: Test how different parts of the plugin work together
+- **Unit Tests**: Test individual functions and methods in isolation (EnforcerTest)
+- **Integration Tests**: Test how different parts of the plugin work together (to be added)
 
 ## Writing Tests
 
