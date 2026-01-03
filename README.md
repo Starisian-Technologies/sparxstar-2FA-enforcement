@@ -1,8 +1,11 @@
 # SPARXSTAR Enterprise 2FA Enforcement & Recovery (Hardened)
 
 **Version:** 2.0.0
+
 **Type:** WordPress MU-Plugin
+
 **Requires:** PHP 8.2+, WordPress Multisite 6.8+, Official Two-Factor Plugin by WordPress
+
 **Security Model:** Configuration-as-Code
 
 ---
