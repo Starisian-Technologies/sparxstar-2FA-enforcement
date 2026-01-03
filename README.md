@@ -226,11 +226,70 @@ This plugin is suitable for:
 * Contributor networks
 * Enterprise multisite installations
 
+## Installation
+
+1. Download the plugin file
+2. Upload to `wp-content/mu-plugins/` directory
+3. The plugin will automatically activate (mu-plugins auto-load)
+
+---
+
+## Development
+
+### Testing
+
+This repository includes comprehensive testing infrastructure:
+
+```bash
+# Install test dependencies
+./bin/setup-tests.sh
+
+# Run all tests
+composer test
+
+# Run unit tests only
+composer test:unit
+
+# Run integration tests only
+composer test:integration
+
+# Generate coverage report
+composer test:coverage
+```
+
+See [TESTING.md](TESTING.md) for detailed testing documentation.
+
+### Code Quality
+
+```bash
+# Check code style
+composer lint
+
+# Fix code style issues
+composer lint:fix
+```
+
+## Documentation
+
+- [Testing Guide](TESTING.md) - Comprehensive guide for running and writing tests
+- [Plugin Testing Instructions](PLUGIN_TESTING_INSTRUCTIONS.md) - Instructions for plugin developers
+- [Quick Reference](QUICK_REFERENCE.md) - Quick command reference for testing
+
+## Contributing
+
+Contributions are welcome! Please ensure:
+
+1. All tests pass
+2. Code follows WordPress Coding Standards
+3. New features include tests
+4. Documentation is updated
+
 ---
 
 ## License
 
-MIT
+MIT License - see [LICENSE](LICENSE) file for details.
+
 This plugin is intended for controlled deployment environments.
 
 Copyright (c) 2025-2026 Starisian Technologies. SPARXSTAR and Starisian Technologies are trademarks of Starisian Technologies.
