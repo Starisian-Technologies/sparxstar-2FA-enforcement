@@ -1,8 +1,8 @@
 <?php
 /**
- * PHPUnit bootstrap file for Sparxstar 2FA Enforcement tests
+ * PHPUnit bootstrap file for Enterprise 2FA Enforcement tests
  *
- * @package StarisianTechnologies\Sparxstar2FA\Tests
+ * @package Enterprise\Security\TwoFactor\Tests
  */
 
 // Composer autoloader

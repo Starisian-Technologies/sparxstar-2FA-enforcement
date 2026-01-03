@@ -1,14 +1,14 @@
 <?php
 /**
- * Integration test example for the Sparxstar 2FA Enforcement plugin
+ * Integration test example for the 2FA Enforcement plugin
  *
- * @package StarisianTechnologies\Sparxstar2FA\Tests
+ * @package Enterprise\Security\TwoFactor\Tests
  */
 
-namespace StarisianTechnologies\Sparxstar2FA\Tests\Integration;
+namespace Enterprise\Security\TwoFactor\Tests\Integration;
 
-use StarisianTechnologies\Sparxstar2FA\Tests\Helpers\TestCase;
-use StarisianTechnologies\Sparxstar2FA\Tests\Helpers\WordPressMocks;
+use Enterprise\Security\TwoFactor\Tests\Helpers\TestCase;
+use Enterprise\Security\TwoFactor\Tests\Helpers\WordPressMocks;
 use Brain\Monkey\Functions;
 use Brain\Monkey\Actions;
 

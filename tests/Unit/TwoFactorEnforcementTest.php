@@ -2,13 +2,13 @@
 /**
  * Unit test for 2FA enforcement functionality
  *
- * @package StarisianTechnologies\Sparxstar2FA\Tests
+ * @package Enterprise\Security\TwoFactor\Tests
  */
 
-namespace StarisianTechnologies\Sparxstar2FA\Tests\Unit;
+namespace Enterprise\Security\TwoFactor\Tests\Unit;
 
-use StarisianTechnologies\Sparxstar2FA\Tests\Helpers\TestCase;
-use StarisianTechnologies\Sparxstar2FA\Tests\Helpers\WordPressMocks;
+use Enterprise\Security\TwoFactor\Tests\Helpers\TestCase;
+use Enterprise\Security\TwoFactor\Tests\Helpers\WordPressMocks;
 use Brain\Monkey\Functions;
 use Brain\Monkey\Actions;
 

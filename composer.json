@@ -22,12 +22,12 @@
     },
     "autoload": {
         "psr-4": {
-            "StarisianTechnologies\\Sparxstar2FA\\": "src/"
+            "Enterprise\\Security\\TwoFactor\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "StarisianTechnologies\\Sparxstar2FA\\Tests\\": "tests/"
+            "Enterprise\\Security\\TwoFactor\\Tests\\": "tests/"
         }
     },
     "scripts": {

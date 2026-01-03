@@ -2,10 +2,10 @@
 /**
  * WordPress mocking utilities
  *
- * @package StarisianTechnologies\Sparxstar2FA\Tests
+ * @package Enterprise\Security\TwoFactor\Tests
  */
 
-namespace StarisianTechnologies\Sparxstar2FA\Tests\Helpers;
+namespace Enterprise\Security\TwoFactor\Tests\Helpers;
 
 use Brain\Monkey\Functions;
 
