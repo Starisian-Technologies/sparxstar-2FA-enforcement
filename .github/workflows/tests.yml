@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['7.4', '8.0', '8.1', '8.2']
+        php-version: ['8.2', '8.3']
     
     steps:
     - name: Checkout code
@@ -50,11 +50,11 @@ jobs:
       run: composer test:integration
     
     - name: Generate coverage report
-      if: matrix.php-version == '8.1'
+      if: matrix.php-version == '8.2'
       run: composer test:coverage
     
     - name: Upload coverage to Codecov
-      if: matrix.php-version == '8.1'
+      if: matrix.php-version == '8.2'
       uses: codecov/codecov-action@v3
       with:
         files: ./coverage/clover.xml
@@ -73,7 +73,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.1'
+        php-version: '8.2'
         extensions: mbstring, xml, ctype, json
         tools: composer:v2, cs2pr
     

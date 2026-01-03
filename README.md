@@ -19,7 +19,7 @@ A multi-site aware, WordPress mu-plugin to enforce WordPress Two-Factor, a 2FA p
 ## Requirements
 
 - WordPress 5.8 or higher
-- PHP 7.4 or higher
+- PHP 8.2 or higher
 - WordPress Two-Factor plugin installed and activated
 
 ## Development
