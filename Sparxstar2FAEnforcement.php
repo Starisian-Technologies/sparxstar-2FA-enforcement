@@ -1,20 +1,35 @@
 <?php
 /**
- * Plugin Name: Enterprise 2FA Enforcement & Recovery (Hardened)
- * Description: Strictly enforces 2FA with role-based auto-provisioning and CLI recovery. hardened for high-compliance environments.
- * Version: 2.0.0
- * Author: Enterprise Security
- * Requires PHP: 8.2
+ * SPARXSTAR 2FA Enforcement
+ * 
+ * @file 		Sparxstar2FAEnforcement.php
+ * @package 	Starisian\Sparxstar\TwoFactor
+ * @version		0.5.0
+ * @license		MIT
+ * @copyright	Copyright (c) 2026 Starisian Technologies.
  *
- * @package    Enterprise\Security\TwoFactor
+ * @wordpress-plugin
+ * Plugin Name: 	  SPARXSTAR 2FA Enforcement
+ * Description: 	  Strictly enforces 2FA with role-based auto-provisioning and CLI recovery. hardened for high-compliance environments.
+ * Version: 		  0.5.0
+ * Requires at least: 5.2
+ * Requires PHP:      7.2
+ * Author: 			  Starisian Technologies (Max Barrett) <support@starisian.com>
+ * Author URI: 		  https://starisian.com
+ * Text Domain:       sparxstar-2fa-enforcement
+ * License:           MIT
+ * License URI:       http://www.gnu.org/licenses/mit.txt
+ * Update URI:        https://starisian.com/sparxstar/sparxstar-2fa-enforcement
  */
 
 declare(strict_types=1);
 
-namespace Enterprise\Security\TwoFactor;
+namespace Starisian\Sparxstar\TwoFactor;
 
 use WP_User;
 use WP_CLI;
+use Two_Factor_Core;
+use Two_Factor_Email;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -22,18 +37,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class Enforcer
+ * Class Sparxstar2FAEnforcement
  * Handles strict enforcement, auto-provisioning, and emergency bypass.
  */
-final class Enforcer {
+final class Sparxstar2FAEnforcement {
 
-	private const BYPASS_META_KEY = '_enterprise_2fa_bypass_expires';
+	private const SPARX_2FA_BYPASS_META_KEY = '_enterprise_2fa_bypass_expires';
 
 	/**
 	 * Roles allowed to configure their own 2FA (TOTP/Keys).
 	 * All other roles will be strictly locked to Email Only.
 	 */
-	private const SELF_MANAGED_ROLES = [
+	private const SPARX_2FA_SELF_MANAGED_ROLES = [
 		'administrator',
 		'editor',
 		'author',
@@ -43,8 +58,9 @@ final class Enforcer {
 	/**
 	 * Roles that MUST use 2FA.
 	 * Currently set to ALL, but can be filtered if you need a "Service Account" exemption.
+	 * @var SPARX_2FA_ENFORCED_ROLES
 	 */
-	private const ENFORCED_ROLES = [
+	private const SPARX_2FA_ENFORCED_ROLES = [
 		'administrator',
 		'editor',
 		'author',
@@ -54,9 +70,15 @@ final class Enforcer {
 		'shop_manager',
 	];
 
-	public static function init(): void {
+	/**
+	 * Initializes the plugin.
+	 *
+	 * @return void
+	 */
+	public static function sparx2FA_init(): void {
 		// SAFETY: Do not run if the core 2FA plugin is missing.
-		if ( ! class_exists( '\Two_Factor_Core' ) ) {
+		if ( ! class_exists( "\Two_Factor_Core" ) ) {
+			add_action('admin-notice', 'sparx2FAAdminNotice');
 			return;
 		}
 
@@ -85,14 +107,14 @@ final class Enforcer {
 	 * @param WP_User $user     The user object.
 	 * @return bool True to enforce, False to allow bypass.
 	 */
-	public static function enforce_strict( bool $enforced, WP_User $user ): bool {
+	public static function sparx2FA_enforce_strict( bool $enforced, WP_User $user ): bool {
 		// 1. Global Kill Switch via wp-config.php (Panic Button)
 		if ( defined( 'ENTERPRISE_2FA_DISABLE_ALL' ) && ENTERPRISE_2FA_DISABLE_ALL ) {
 			return false;
 		}
 
 		// 2. Check for Valid Emergency Bypass
-		$bypass_expires = (int) get_user_meta( $user->ID, self::BYPASS_META_KEY, true );
+		$bypass_expires = (int) get_user_meta( $user->ID, self::SPARX_2FA_BYPASS_META_KEY, true );
 		if ( $bypass_expires > time() ) {
 			return false; // Valid bypass active
 		}
@@ -105,7 +127,7 @@ final class Enforcer {
 		// 3. Strict Role Check
 		// If user has ANY of the enforced roles, require 2FA.
 		$user_roles = (array) $user->roles;
-		if ( array_intersect( self::ENFORCED_ROLES, $user_roles ) ) {
+		if ( array_intersect( self::SPARX_2FA_ENFORCED_ROLES, $user_roles ) ) {
 			return true;
 		}
 
@@ -119,7 +141,7 @@ final class Enforcer {
 	 * @param array $providers
 	 * @return array
 	 */
-	public static function register_email_provider( array $providers ): array {
+	public static function sparx2FA_register_email_provider( array $providers ): array {
 		// Only register if the class exists (Plugin active) and not already present.
 		if ( ! isset( $providers['Two_Factor_Email'] ) && class_exists( 'Two_Factor_Email' ) ) {
 			$providers['Two_Factor_Email'] = 'Two_Factor_Email';
@@ -134,8 +156,8 @@ final class Enforcer {
 	 * @param WP_User $user              The user.
 	 * @return array Modified providers.
 	 */
-	public static function provision_and_restrict_methods( array $enabled_providers, WP_User $user ): array {
-		$is_privileged = self::is_privileged_user( $user );
+	public static function sparx2FA_provision_and_restrict_methods( array $enabled_providers, WP_User $user ): array {
+		$is_privileged = self::sparx2FA_is_privileged_user( $user );
 		
 		// SCENARIO 1: Frontend / Low-Privilege User
 		// Requirement: "Frontend users have 2FA but only via emailed one time codes"
@@ -148,8 +170,7 @@ final class Enforcer {
 		// Requirement: Can use any method, but MUST have at least one.
 		
 		// Check for strong methods
-		$has_strong_method = ! empty( array_intersect( 
-			['Two_Factor_Totp', 'Two_Factor_FIDO_U2F', 'Two_Factor_WebAuthn'], 
+		$has_strong_method = ! empty( array_intersect( 			['Two_Factor_Totp', 'Two_Factor_FIDO_U2F', 'Two_Factor_WebAuthn'], 
 			$enabled_providers 
 		));
 
@@ -169,8 +190,11 @@ final class Enforcer {
 
 	/**
 	 * Prioritizes providers: WebAuthn > TOTP > Email.
+	 * @param string $primary_provider Primary provider.
+	 * @param WP_User $user	The user.
+	 * @return string
 	 */
-	public static function prioritize_strongest_method( string $primary_provider, WP_User $user ): string {
+	public static function sparx2FA_prioritize_strongest_method( string $primary_provider, WP_User $user ): string {
 		$enabled = \Two_Factor_Core::get_enabled_providers_for_user( $user->ID );
 		
 		// Security Hierarchy
@@ -193,17 +217,11 @@ final class Enforcer {
 	/**
 	 * strict check for "Management" capability based on roles.
 	 * Replaces the loose 'edit_posts' check.
+	 * @return bool
 	 */
 	private static function is_privileged_user( WP_User $user ): bool {
-		return ! empty( array_intersect( self::SELF_MANAGED_ROLES, (array) $user->roles ) );
+		return ! empty( array_intersect( self::SPARX_2FA_SELF_MANAGED_ROLES, (array) $user->roles ) );
 	}
-}
-
-/**
- * Class CLI_Command
- * Emergency access tools. Final class to prevent extension.
- */
-final class CLI_Command {
 
 	/**
 	 * Bypass 2FA for a specific user for a limited time.
@@ -219,8 +237,9 @@ final class CLI_Command {
 	 * ## EXAMPLES
 	 *
 	 *     wp enterprise-2fa bypass admin --minutes=20
+	 * @return void
 	 */
-	public function bypass( array $args, array $assoc_args ): void {
+	public function sparx2FA_bypass( array $args, array $assoc_args ): void {
 		$user_fetch = $args[0];
 		$user       = get_user_by( 'login', $user_fetch ) ?: get_user_by( 'email', $user_fetch ) ?: get_user_by( 'id', $user_fetch );
 
@@ -243,8 +262,9 @@ final class CLI_Command {
 	 *
 	 * <user>
 	 * : The user login, email, or ID.
+	 * @return void
 	 */
-	public function secure( array $args ): void {
+	public function sparx2FA_Secure( array $args ): void {
 		$user_fetch = $args[0];
 		$user       = get_user_by( 'login', $user_fetch ) ?: get_user_by( 'email', $user_fetch ) ?: get_user_by( 'id', $user_fetch );
 
@@ -255,6 +275,21 @@ final class CLI_Command {
 		delete_user_meta( $user->ID, '_enterprise_2fa_bypass_expires' );
 		\WP_CLI::success( "Bypass revoked for '{$user->user_login}'." );
 	}
-}
 
-Enforcer::init();
+	/**
+	 * Notifies admin that TwoFactor is not installed.
+	 * @return void
+	 */
+	public function sparx2FA_Admin_Notice(): void {
+		?>
+		<div class="notice notice-failure is-dismissible">
+			<p><?php _e( 'Please install the WordPress TwoFactor plugin (https://wordpress.org/plugins/two-factor/).', 'sparxstar-2fa-enforcement' ); ?></p>
+		</div>
+		<?php
+	}
+		
+}
+// to run as standard WordPress plugin uncomment line and comment out the MU-Plugin add_action.
+//add_action('plugins_loaded', Sparxstar2FAEnforcement::sparx_2FA_init);
+// to run as MU-Plugin - Recommended
+add_action('muplugins_loaded', Sparxstar2FAEnforcement::sparx_2FA_init);
