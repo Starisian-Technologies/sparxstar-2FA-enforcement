@@ -8,9 +8,6 @@ on:
   pull_request:
     branches: [ main, develop ]
 
-permissions:
-  contents: read
-
 jobs:
   test:
     name: PHP ${{ matrix.php-version }} Tests
