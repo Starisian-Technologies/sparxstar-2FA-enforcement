@@ -1,3 +1,5 @@
+<img width="1280" height="640" alt="sparxstar-tfa-enforcement" src="https://github.com/user-attachments/assets/99439d34-c32c-4410-bbd1-1bbd1296ed82" />
+
 # SPARXSTAR 2FA Enforcement
 
 **Version:** 0.5.0
@@ -7,6 +9,10 @@
 **Requires:** PHP 7.2+, WordPress Multisite, Official Two-Factor Plugin by WordPress
 
 **Security Model:** Configuration-as-Code
+
+[![CodeQL](https://github.com/Starisian-Technologies/sparxstar-2FA-enforcement/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/Starisian-Technologies/sparxstar-2FA-enforcement/actions/workflows/github-code-scanning/codeql)  [![Copilot code review](https://github.com/Starisian-Technologies/sparxstar-2FA-enforcement/actions/workflows/copilot-pull-request-reviewer/copilot-pull-request-reviewer/badge.svg)](https://github.com/Starisian-Technologies/sparxstar-2FA-enforcement/actions/workflows/copilot-pull-request-reviewer/copilot-pull-request-reviewer)  [![Copilot coding agent](https://github.com/Starisian-Technologies/sparxstar-2FA-enforcement/actions/workflows/copilot-swe-agent/copilot/badge.svg)](https://github.com/Starisian-Technologies/sparxstar-2FA-enforcement/actions/workflows/copilot-swe-agent/copilot) 
+
+[![Release Plugin](https://github.com/Starisian-Technologies/sparxstar-2FA-enforcement/actions/workflows/release.yml/badge.svg)](https://github.com/Starisian-Technologies/sparxstar-2FA-enforcement/actions/workflows/release.yml)
 
 ---
 
