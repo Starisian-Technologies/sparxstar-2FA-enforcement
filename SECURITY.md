@@ -98,14 +98,12 @@ Accounts that have not setup 2FA will be emailed a one-time code at login.
 
 The plugin does not log any data.
 
-No Logging ever of:
+No logging of the following data is ever performed:
 
 - Passwords\
 - OTP codes\
 - Secret keys\
 - Recovery codes
-- Anything
-
 * * * * *
 
 7\. Dependency Trust Boundary
