@@ -204,4 +204,4 @@ This policy must be reviewed:
 15\. Summary
 ------------
 
-The SPARXSTAR Two-Factor Enforcement Plugin provides strict role-based enforcement of two-factor authentication while delegating all credential and token handling to trusted WordPress authentication systems. It introduces no new sensitive data stores and operates in fail-closed mode to prevent authentication without verified 2FA.
+The SPARXSTAR Two-Factor Enforcement Plugin provides strict role-based enforcement of two-factor authentication while delegating all credential and token handling to trusted WordPress authentication systems. It introduces no new sensitive data stores and, when the Two-Factor Plugin is missing or disabled, fails open by allowing authentication to proceed without enforced 2FA.
