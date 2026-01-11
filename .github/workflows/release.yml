@@ -38,7 +38,8 @@ jobs:
         run: sha256sum sparxstar-2fa-enforcement.zip > sparxstar-2fa-enforcement.zip.sha256
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        # uses: softprops/action-gh-release@v1
+        uses: phuonghuynh/action-ghrelease@08c9010ba33d1fbafd7a06d35afebb93dd0b876a
         with:
           files: |
             sparxstar-2fa-enforcement.zip
