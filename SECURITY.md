@@ -87,7 +87,7 @@ Access controls remains under the control of WordPress core and the Official Wor
 - Modify enforced role configuration\
 - Override enforcement filters
 
-Administrators and users cannot exempt themselves from enforcement. All users loggin will have 2FA enforced.
+Administrators and users cannot exempt themselves from enforcement. All users logging in will have 2FA enforced.
 
 Accounts that have not setup 2FA will be emailed a one-time code at login.
 
