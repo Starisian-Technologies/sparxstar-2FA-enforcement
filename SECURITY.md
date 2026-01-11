@@ -81,7 +81,7 @@ All sensitive authentication data remains under the control of:
 5\. Access Control
 ------------------
 
-Access controls remains under the control of WordPress core and the Official WordPress, Two-Factor Plugin, including access control to:
+Access controls remains under the control of WordPress core and the Official WordPress Two-Factor Plugin, including access control to:
 
 - Activate or deactivate the plugin\
 - Modify enforced role configuration\
