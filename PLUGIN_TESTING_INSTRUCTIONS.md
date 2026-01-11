@@ -24,13 +24,13 @@ When the main plugin file is added, it should work with this test structure. Her
 
 The main plugin file should be placed in the root directory as:
 ```
-sparxstar-2fa-enforcement.php
+Sparxstar2FAEnforcement.php
 ```
 
 Or you can organize code in a `src/` directory if needed:
 ```
 src/
-└── Plugin.php
+└── Sparxstar2FAEnforcement.php
 ```
 
 ### Expected Plugin Header
@@ -38,12 +38,26 @@ src/
 ```php
 <?php
 /**
- * Plugin Name: Sparxstar 2FA Enforcement
- * Description: A multi-site aware, WordPress mu-plugin to enforce WordPress Two-Factor, a 2FA plugin, security for all user roles at the point of registration.
- * Version: 1.0.0
- * Author: Starisian Technologies
- * License: MIT
- * Text Domain: sparxstar-2fa-enforcement
+ * SPARXSTAR 2FA Enforcement
+ *
+ * @file        Sparxstar2FAEnforcement.php
+ * @package     Starisian\Sparxstar\TwoFactor
+ * @version     0.5.0
+ * @license     MIT
+ * @copyright   Copyright (c) 2026 Starisian Technologies.
+ *
+ * @wordpress-plugin
+ * Plugin Name:       SPARXSTAR 2FA Enforcement
+ * Description:       Strictly enforces 2FA with role-based auto-provisioning and CLI recovery. hardened for high-compliance environments.
+ * Version:           0.5.0
+ * Requires at least: 5.2
+ * Requires PHP:      7.2
+ * Author:            Starisian Technologies (Max Barrett) <support@starisian.com>
+ * Author URI:        https://starisian.com
+ * Text Domain:       sparxstar-2fa-enforcement
+ * License:           MIT
+ * License URI:       http://www.gnu.org/licenses/mit.txt
+ * Update URI:        https://starisian.com/sparxstar/sparxstar-2fa-enforcement
  */
 ```
 
@@ -67,7 +81,7 @@ public function test_subscribers_are_locked_to_email_only()
     $user->ID = 123;
 
     $current_providers = [];
-    $result = Enforcer::provision_and_restrict_methods($current_providers, $user);
+    $result = Sparxstar2FAEnforcement::sparx2FA_provision_and_restrict_methods($current_providers, $user);
 
     // Expectation: The system returns ONLY email
     $this->assertEquals(['Two_Factor_Email'], $result);
@@ -82,7 +96,7 @@ public function test_new_feature(): void
     // Test your actual plugin functionality
     
     // Test that hooks are registered
-    $this->assertTrue(has_action('user_register', 'sparxstar_enforce_2fa'));
+    $this->assertTrue(has_action('two_factor_user_enforced', [Sparxstar2FAEnforcement::class, 'sparx2FA_enforce_strict']));
 }
 ```
 
@@ -96,7 +110,7 @@ public function test_new_feature(): void
 
 ### 2. Add Your Plugin File
 
-Create `sparxstar-2fa-enforcement.php` in the root directory with your plugin code.
+Create `Sparxstar2FAEnforcement.php` in the root directory with your plugin code.
 
 ### 3. Update Tests
 

@@ -2,10 +2,10 @@
 /**
  * Base TestCase class for all tests
  *
- * @package Enterprise\Security\TwoFactor\Tests
+ * @package Starisian\Sparxstar\TwoFactor\Tests
  */
 
-namespace Enterprise\Security\TwoFactor\Tests\Helpers;
+namespace Starisian\Sparxstar\TwoFactor\Tests\Helpers;
 
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use Brain\Monkey;

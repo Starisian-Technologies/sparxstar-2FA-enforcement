@@ -1,0 +1,46 @@
+name: Release Plugin
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get Version
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+      - name: Update Version in File
+        run: |
+          sed -i "s/Version:.*$/Version:           ${{ env.VERSION }}/" Sparxstar2FAEnforcement.php
+          sed -i "s/@version.*$/@version         ${{ env.VERSION }}/" Sparxstar2FAEnforcement.php
+
+      - name: Prepare Build Directory
+        run: |
+          mkdir -p build/sparxstar-2fa-enforcement
+          rsync -rc --exclude-from=.distignore . build/sparxstar-2fa-enforcement/
+
+      - name: Create Zip Archive
+        working-directory: build
+        run: |
+          zip -r ../sparxstar-2fa-enforcement.zip sparxstar-2fa-enforcement
+
+      - name: Generate Hash
+        run: sha256sum sparxstar-2fa-enforcement.zip > sparxstar-2fa-enforcement.zip.sha256
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            sparxstar-2fa-enforcement.zip
+            sparxstar-2fa-enforcement.zip.sha256
+          generate_release_notes: true

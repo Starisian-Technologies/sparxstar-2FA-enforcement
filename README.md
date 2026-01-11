@@ -1,10 +1,10 @@
-# SPARXSTAR Enterprise 2FA Enforcement & Recovery (Hardened)
+# SPARXSTAR 2FA Enforcement
 
-**Version:** 2.0.0
+**Version:** 0.5.0
 
 **Type:** WordPress MU-Plugin
 
-**Requires:** PHP 8.2+, WordPress Multisite 6.8+, Official Two-Factor Plugin by WordPress
+**Requires:** PHP 7.2+, WordPress Multisite, Official Two-Factor Plugin by WordPress
 
 **Security Model:** Configuration-as-Code
 
@@ -12,7 +12,7 @@
 
 ## Overview
 
-**SPARXSTAR Enterprise 2FA Enforcement & Recovery (Hardened)** is a strict, role-aware Two-Factor Authentication enforcement layer designed for **high-compliance WordPress Multisite environments**.
+**SPARXSTAR Enterprise 2FA Enforcement (Hardened)** is a strict, role-aware Two-Factor Authentication enforcement layer designed for **high-compliance WordPress Multisite environments**.
 
 This plugin **does not replace** the official WordPress Two-Factor plugin.
 It **extends and hardens it** by enforcing deterministic rules around:
@@ -37,7 +37,7 @@ It is built to work **cleanly and safely** alongside:
   No UI settings. All policy is defined in constants.
 
 * **Fail-Safe by Default**
-  If the core Two-Factor plugin is disabled, this MU-plugin exits silently.
+  If the core Two-Factor plugin is disabled, this MU-plugin exits silently (with an admin notice).
 
 * **Strict Role Boundaries**
   No loose capability checks (`edit_posts` etc.).
@@ -55,7 +55,8 @@ It is built to work **cleanly and safely** alongside:
 
 ### 1. Enforces 2FA by Role
 
-Users with any role listed in `ENFORCED_ROLES` **must complete 2FA** to log in.
+Users with any role listed in `SPARX_2FA_ENFORCED_ROLES` **must complete 2FA** to log in.
+Super Admins are also strictly enforced across the network.
 
 Example enforced roles:
 
@@ -100,23 +101,29 @@ Administrators can temporarily bypass 2FA for a specific user via WP-CLI.
 
 ## Installation
 
-### Location (Required)
+This plugin can be installed as a **Must-Use (MU) Plugin** (recommended for strict enforcement) or a **Regular Plugin**.
 
-```text
-wp-content/mu-plugins/enterprise-2fa-enforcement.php
-```
+### Option 1: Must-Use Plugin (Recommended)
 
-This plugin **must** be installed as an MU-plugin.
+1. Download `sparxstar-2fa-enforcement.zip` from the [Releases page](https://github.com/Starisian-Technologies/sparxstar-2FA-enforcement/releases).
+2. Extract the zip file.
+3. Upload `Sparxstar2FAEnforcement.php` directly to your `wp-content/mu-plugins/` directory. 
+   *(Note: If the `mu-plugins` directory does not exist, you must create it).*
+4. The plugin is automatically active for all sites.
 
----
+### Option 2: Regular Plugin
+
+1. Download `sparxstar-2fa-enforcement.zip` from the [Releases page](https://github.com/Starisian-Technologies/sparxstar-2FA-enforcement/releases).
+2. In your WordPress Admin, go to **Plugins > Add New > Upload Plugin**.
+3. Upload the zip file and click **Install Now**.
+4. **Network Activate** (for Multisite) or **Activate** the plugin.
 
 ### Dependencies
 
-* WordPress Multisite
-* Official WordPress Two-Factor plugin
-* WP-CLI (for recovery commands)
-
-If the Two-Factor plugin is not active, this MU-plugin **does nothing**.
+* **WordPress 5.2+**
+* **PHP 7.2+**
+* **[Two-Factor](https://wordpress.org/plugins/two-factor/)** plugin (Required)
+  * This plugin extends the official Two-Factor plugin. If the base plugin is missing, this enforcement layer will exit safely and display an admin notice.
 
 ---
 
@@ -127,7 +134,7 @@ Configuration is done **in code only**, via constants inside the file:
 ### Roles Allowed to Self-Manage 2FA
 
 ```php
-private const SELF_MANAGED_ROLES = [
+private const SPARX_2FA_SELF_MANAGED_ROLES = [
 	'administrator',
 	'editor',
 	'author',
@@ -141,7 +148,7 @@ These users may configure TOTP, WebAuthn, or hardware keys.
 ### Roles That Must Use 2FA
 
 ```php
-private const ENFORCED_ROLES = [
+private const SPARX_2FA_ENFORCED_ROLES = [
 	'administrator',
 	'editor',
 	'author',
@@ -152,7 +159,7 @@ private const ENFORCED_ROLES = [
 ];
 ```
 
-Any user with one of these roles is **always enforced**.
+Any user with one of these roles (or Super Admin) is **always enforced**.
 
 ---
 
@@ -173,7 +180,7 @@ This disables enforcement **without removing the plugin**.
 ### Temporarily Bypass 2FA
 
 ```bash
-wp enterprise-2fa bypass admin --minutes=20
+wp enterprise-2fa sparx2FA_bypass admin --minutes=20
 ```
 
 Creates a **time-boxed bypass** for the specified user.
@@ -183,7 +190,7 @@ Creates a **time-boxed bypass** for the specified user.
 ### Revoke a Bypass
 
 ```bash
-wp enterprise-2fa secure admin
+wp enterprise-2fa sparx2FA_secure admin
 ```
 
 Immediately re-enforces 2FA.
@@ -225,12 +232,6 @@ This plugin is suitable for:
 * Education platforms
 * Contributor networks
 * Enterprise multisite installations
-
-## Installation
-
-1. Download the plugin file
-2. Upload to `wp-content/mu-plugins/` directory
-3. The plugin will automatically activate (mu-plugins auto-load)
 
 ---
 
@@ -292,9 +293,10 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 This plugin is intended for controlled deployment environments.
 
-Copyright (c) 2025-2026 Starisian Technologies. SPARXSTAR and Starisian Technologies are trademarks of Starisian Technologies.
+Copyright (c) 2025-2026 Starisian Technologies. 
 
-WordPress is a trademark of Wordress.  Mercator and Human Made are trademarks of Human Made. Starisian Technologies is in now was affiliated with WordPress or Human Made.
+SPARXSTAR and Starisian Technologies are trademarks of Starisian Technologies. WordPress is a trademark of WordPress Inc.  
+Starisian Technologies is in no way affiliated with WordPress.
 
 ---
 
