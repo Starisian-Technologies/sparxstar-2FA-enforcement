@@ -21,13 +21,13 @@
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
     },
     "autoload": {
-        "psr-4": {
-            "Enterprise\\Security\\TwoFactor\\": "src/"
-        }
+        "classmap": [
+            "Sparxstar2FAEnforcement.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
-            "Enterprise\\Security\\TwoFactor\\Tests\\": "tests/"
+            "Starisian\\Sparxstar\\TwoFactor\\Tests\\": "tests/"
         }
     },
     "scripts": {

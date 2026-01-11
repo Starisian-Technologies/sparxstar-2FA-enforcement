@@ -129,10 +129,10 @@ Example:
 ```php
 <?php
 
-namespace Enterprise\Security\TwoFactor\Tests\Unit;
+namespace Starisian\Sparxstar\TwoFactor\Tests\Unit;
 
-use Enterprise\Security\TwoFactor\Tests\Helpers\TestCase;
-use Enterprise\Security\TwoFactor\Tests\Helpers\WordPressMocks;
+use Starisian\Sparxstar\TwoFactor\Tests\Helpers\TestCase;
+use Starisian\Sparxstar\TwoFactor\Tests\Helpers\WordPressMocks;
 use Brain\Monkey\Functions;
 
 class MyFeatureTest extends TestCase
