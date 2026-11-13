@@ -55,6 +55,21 @@ if (!class_exists('WP_User')) {
         }
     }
 }
+// Minimal stand-in for the Two Factor plugin's core class, so sparx2FA_init()
+// gets past its class_exists() guard and its hook registrations can be asserted.
+if (!class_exists('Two_Factor_Core')) {
+    class Two_Factor_Core
+    {
+        /** @var array<int, array<int, string>> Enabled providers per user id, set by a test. */
+        public static $enabled = [];
+
+        public static function get_enabled_providers_for_user($user_id)
+        {
+            return self::$enabled[$user_id] ?? [];
+        }
+    }
+}
+
 if (!class_exists('WP_Error')) {
     class WP_Error
     {

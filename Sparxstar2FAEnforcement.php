@@ -99,7 +99,11 @@ final class Sparxstar2FAEnforcement
 		}
 
 		// 1. Enforce 2FA (with bypass check).
-		add_filter('two_factor_user_enforced', [self::class, 'sparx2FA_enforce_strict'], 10, 2);
+		// The Two Factor plugin applies this filter in Two_Factor_Core::is_user_using_two_factor()
+		// (class-two-factor-core.php:966, @since 0.17.0). There is no 'two_factor_user_enforced'
+		// filter anywhere in that plugin's source, so the callback below never ran: the emergency
+		// bypass and ENTERPRISE_2FA_DISABLE_ALL were both inert.
+		add_filter('two_factor_is_required_for_user', [self::class, 'sparx2FA_enforce_strict'], 10, 2);
 
 		// 2. Register Email Provider (Scoped).
 		add_filter('two_factor_providers', [self::class, 'sparx2FA_register_email_provider']);
@@ -142,10 +146,20 @@ final class Sparxstar2FAEnforcement
 		}
 
 		// 3. Strict Role Check
-		// If user has ANY of the enforced roles, require 2FA.
+		// $enforced arrives as core's "this user has a usable provider"
+		// (! empty( $provider ), class-two-factor-core.php:966). Upstream is explicit
+		// that returning true for a user without one does not prompt enrolment, it
+		// fails the login outright: Two_Factor_Core::wp_login() destroys the session,
+		// clears the auth cookies and shows a second-factor screen with no provider to
+		// answer it (class-two-factor-core.php:979-992). The plugin has no enrolment
+		// enforcement to fall back on (WordPress/two-factor#255).
+		//
+		// So an enforced role raises nothing here. What actually guarantees these roles
+		// carry a factor is sparx2FA_provision_and_restrict_methods(), which forces
+		// Two_Factor_Email on, making $enforced true for them before this runs.
 		$user_roles = (array) $user->roles;
 		if (array_intersect(self::SPARX_2FA_ENFORCED_ROLES, $user_roles) || is_super_admin($user->ID)) {
-			return true;
+			return $enforced;
 		}
 
 		// Default to existing state if role is not strictly enforced (e.g. custom 3rd party roles)
@@ -283,7 +297,7 @@ final class Sparxstar2FAEnforcement
 		$minutes = (int) ($assoc_args['minutes'] ?? 15);
 		$expiry = time() + ($minutes * 60);
 
-		update_user_meta($user->ID, '_enterprise_2fa_bypass_expires', $expiry);
+		update_user_meta($user->ID, self::SPARX_2FA_BYPASS_META_KEY, $expiry);
 
 		\WP_CLI::success(sprintf("Bypass active for '%s' for %d minutes.", $user->user_login, $minutes));
 	}
@@ -306,7 +320,7 @@ final class Sparxstar2FAEnforcement
 			\WP_CLI::error("User '$user_fetch' not found.");
 		}
 
-		delete_user_meta($user->ID, '_enterprise_2fa_bypass_expires');
+		delete_user_meta($user->ID, self::SPARX_2FA_BYPASS_META_KEY);
 		\WP_CLI::success("Bypass revoked for '{$user->user_login}'.");
 	}
 
