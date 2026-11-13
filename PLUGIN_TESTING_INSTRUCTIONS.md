@@ -43,7 +43,6 @@ src/
  * @file        Sparxstar2FAEnforcement.php
  * @package     Starisian\Sparxstar\TwoFactor
  * @version     0.5.0
- * @license     MIT
  * @copyright   Copyright (c) 2026 Starisian Technologies.
  *
  * @wordpress-plugin
@@ -55,8 +54,6 @@ src/
  * Author:            Starisian Technologies (Max Barrett) <support@starisian.com>
  * Author URI:        https://starisian.com
  * Text Domain:       sparxstar-2fa-enforcement
- * License:           MIT
- * License URI:       http://www.gnu.org/licenses/mit.txt
  * Update URI:        https://starisian.com/sparxstar/sparxstar-2fa-enforcement
  */
 ```
@@ -160,4 +157,4 @@ When adding new functionality to the plugin:
 
 ## License
 
-This testing infrastructure is part of the Sparxstar 2FA Enforcement plugin and is released under the MIT License.
+This testing infrastructure is part of the SPARXSTAR 2FA Enforcement plugin and is proprietary. See [LICENSE.md](LICENSE.md).

@@ -1,4 +1,22 @@
 <?php
+/************************************************************************
+ * STARISIAN TECHNOLOGIES PROPRIETARY AND CONFIDENTIAL
+ * __________________
+ *
+ * Copyright © 2026 Starisian Technologies (Max Barrett)
+ * All Rights Reserved.
+ *
+ * NOTICE: All information, technical concepts, and intellectual property
+ * contained herein are, and remain the property of Starisian Technologies.
+ * This material is protected by trade secret, copyright, and patent law.
+ *
+ * Access to this software is granted strictly under the terms of a
+ * Starisian Technologies Service Agreement, Commercial License, or
+ * Employment Agreement. Dissemination, reproduction, or reverse
+ * engineering of this material is strictly forbidden unless prior
+ * written permission is obtained from Starisian Technologies.
+ ************************************************************************/
+
 /**
  * WordPress mocking utilities
  *
