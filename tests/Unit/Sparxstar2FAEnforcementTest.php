@@ -85,22 +85,110 @@ class Sparxstar2FAEnforcementTest extends TestCase
     }
 
     /**
-     * Test strict enforcement logic.
+     * The callback must be registered on a filter the Two Factor plugin applies.
+     *
+     * Every other test here calls sparx2FA_enforce_strict() directly, which proves
+     * the logic but never the wiring. That gap let the plugin ship hooked to
+     * 'two_factor_user_enforced', a name absent from the whole of the Two Factor
+     * source, so the callback never ran at all.
+     *
+     * Each name below was read from the plugin's source:
+     *   two_factor_is_required_for_user       class-two-factor-core.php:966
+     *   two_factor_providers                  two-factor.php:81
+     *   two_factor_enabled_providers_for_user two-factor.php:82
+     *   two_factor_primary_provider_for_user  class-two-factor-core.php:924
      */
-    public function test_strict_enforcement_checks()
+    public function test_init_hooks_filters_the_two_factor_plugin_actually_applies()
+    {
+        $added = [];
+        Functions\when('add_filter')->alias(
+            function ($hook, $callback, $priority = 10, $accepted = 1) use (&$added) {
+                $added[] = $hook;
+
+                return true;
+            }
+        );
+        Functions\when('add_action')->justReturn(true);
+
+        Sparxstar2FAEnforcement::sparx2FA_init();
+
+        $this->assertContains(
+            'two_factor_is_required_for_user',
+            $added,
+            'Enforcement must hook a filter the Two Factor plugin applies.'
+        );
+        $this->assertContains('two_factor_providers', $added);
+        $this->assertContains('two_factor_enabled_providers_for_user', $added);
+        $this->assertContains('two_factor_primary_provider_for_user', $added);
+
+        $this->assertNotContains(
+            'two_factor_user_enforced',
+            $added,
+            'two_factor_user_enforced does not exist in the Two Factor plugin; hooking it is a no-op.'
+        );
+    }
+
+    /**
+     * A user in an enforced role with no usable provider must still be able to log in.
+     *
+     * Upstream fails such a login outright rather than prompting enrolment
+     * (class-two-factor-core.php:953-956 and wp_login() at :979-992), so returning
+     * true here would lock the user out, not protect them.
+     */
+    public function test_enforced_role_without_a_provider_is_not_locked_out()
     {
         $user = new \WP_User();
         $user->roles = ['administrator'];
         $user->ID = 1;
 
-        // Mock get_user_meta to return false (no bypass active)
         Functions\when('get_user_meta')->justReturn(false);
 
-        // Run the filter
+        // false = core found no usable provider for this user.
         $should_enforce = Sparxstar2FAEnforcement::sparx2FA_enforce_strict(false, $user);
 
-        $this->assertTrue($should_enforce, 'Admin should be strictly enforced to use 2FA');
+        $this->assertFalse(
+            $should_enforce,
+            'Enforcement must not demand a factor the user has no way to supply.'
+        );
     }
+
+    /**
+     * A customer who has been provisioned a factor is still required to use it.
+     *
+     * sparx2FA_provision_and_restrict_methods() forces Two_Factor_Email on for
+     * non-privileged roles, so core reports a provider and $enforced arrives true.
+     */
+    public function test_provisioned_customer_is_still_required_to_use_2fa()
+    {
+        $user = new \WP_User();
+        $user->roles = ['customer'];
+        $user->ID = 42;
+
+        Functions\when('get_user_meta')->justReturn(false);
+
+        $should_enforce = Sparxstar2FAEnforcement::sparx2FA_enforce_strict(true, $user);
+
+        $this->assertTrue($should_enforce, 'A provisioned customer must still be required to use 2FA.');
+    }
+
+    /**
+     * The emergency bypass must rescue a locked-out administrator.
+     */
+    public function test_bypass_rescues_a_locked_out_administrator()
+    {
+        $user = new \WP_User();
+        $user->roles = ['administrator'];
+        $user->ID = 1;
+
+        // What `wp enterprise-2fa bypass admin` writes: an expiry in the future.
+        Functions\when('get_user_meta')->justReturn(time() + 900);
+
+        $this->assertFalse(
+            Sparxstar2FAEnforcement::sparx2FA_enforce_strict(true, $user),
+            'An active bypass must drop the second-factor requirement.'
+        );
+    }
+
 
     /**
      * Test the Emergency Bypass Logic.
@@ -125,5 +213,32 @@ class Sparxstar2FAEnforcementTest extends TestCase
 
         $should_enforce_expired = Sparxstar2FAEnforcement::sparx2FA_enforce_strict(true, $user);
         $this->assertTrue($should_enforce_expired, 'Enforcement should resume if bypass is expired');
+    }
+    /**
+     * The kill switch must disable enforcement for everyone.
+     *
+     * MUST REMAIN THE LAST TEST IN THIS CLASS. A PHP constant cannot be
+     * undefined once set, and PHPUnit runs the methods of a class in
+     * declaration order, so defining ENTERPRISE_2FA_DISABLE_ALL here would
+     * switch enforcement off for every test declared after it. Process
+     * isolation is not an option: @runInSeparateProcess collides with
+     * Mockery's generated classes through the shared base TestCase.
+     */
+    public function test_kill_switch_disables_enforcement()
+    {
+        if (!defined('ENTERPRISE_2FA_DISABLE_ALL')) {
+            define('ENTERPRISE_2FA_DISABLE_ALL', true);
+        }
+
+        $user = new \WP_User();
+        $user->roles = ['administrator'];
+        $user->ID = 1;
+
+        Functions\when('get_user_meta')->justReturn(false);
+
+        $this->assertFalse(
+            Sparxstar2FAEnforcement::sparx2FA_enforce_strict(true, $user),
+            'ENTERPRISE_2FA_DISABLE_ALL must switch enforcement off even for an enforced role.'
+        );
     }
 }
