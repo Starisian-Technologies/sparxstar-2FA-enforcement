@@ -2,7 +2,7 @@
     "name": "starisian-technologies/sparxstar-2fa-enforcement",
     "description": "A multi-site aware, WordPress mu-plugin to enforce WordPress Two-Factor, a 2FA plugin, security for all user roles at the point of registration.",
     "type": "wordpress-muplugin",
-    "license": "MIT",
+    "license": "proprietary",
     "authors": [
         {
             "name": "Starisian Technologies",

@@ -295,7 +295,9 @@ Contributions are welcome! Please ensure:
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) file for details.
+Proprietary. See [LICENSE.md](LICENSE.md) for the full terms, and
+[LICENSE_HEADER.md](LICENSE_HEADER.md) for the header every source file carries.
+This software is **not** open source.
 
 This plugin is intended for controlled deployment environments.
 

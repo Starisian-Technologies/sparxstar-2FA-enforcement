@@ -65,6 +65,25 @@ jobs:
         name: codecov-umbrella
         fail_ci_if_error: false
 
+  # Proprietary only (LICENSE_HEADER.md). Every .php file must carry the header
+  # after its <?php tag, and no tracked file may carry another license's marker.
+  # Plain Node with no install step, as in sparxstar-shine.
+  license-headers:
+    name: License Headers
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    - run: node scripts/check-license-headers.js
+
   lint:
     name: Code Quality Checks
     runs-on: ubuntu-latest
