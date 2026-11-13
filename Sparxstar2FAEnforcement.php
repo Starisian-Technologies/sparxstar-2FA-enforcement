@@ -297,7 +297,7 @@ final class Sparxstar2FAEnforcement
 		$minutes = (int) ($assoc_args['minutes'] ?? 15);
 		$expiry = time() + ($minutes * 60);
 
-		update_user_meta($user->ID, '_enterprise_2fa_bypass_expires', $expiry);
+		update_user_meta($user->ID, self::SPARX_2FA_BYPASS_META_KEY, $expiry);
 
 		\WP_CLI::success(sprintf("Bypass active for '%s' for %d minutes.", $user->user_login, $minutes));
 	}
@@ -320,7 +320,7 @@ final class Sparxstar2FAEnforcement
 			\WP_CLI::error("User '$user_fetch' not found.");
 		}
 
-		delete_user_meta($user->ID, '_enterprise_2fa_bypass_expires');
+		delete_user_meta($user->ID, self::SPARX_2FA_BYPASS_META_KEY);
 		\WP_CLI::success("Bypass revoked for '{$user->user_login}'.");
 	}
 
