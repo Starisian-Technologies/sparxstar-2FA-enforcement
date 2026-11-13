@@ -385,7 +385,7 @@ final class Sparxstar2FAEnforcement
 	public static function sparx2FA_admin_notice(): void
 	{
 		?>
-		<div class="notice notice-failure is-dismissible">
+		<div class="notice notice-error is-dismissible">
 			<p><?php _e('Please install the WordPress Official <a href="https://wordpress.org/plugins/two-factor" alt="TwoFactor plugin" ref="noopener noreferrer" target="_blank">TwoFactor plugin</a>.', 'sparxstar-2fa-enforcement'); ?>
 			</p>
 		</div>
