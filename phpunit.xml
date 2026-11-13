@@ -18,7 +18,13 @@
             <directory suffix="Test.php">./tests/Integration</directory>
         </testsuite>
     </testsuites>
-    <coverage processUncoveredFiles="true">
+    <!-- processUncoveredFiles must stay false: it makes PHPUnit require() every
+         uncovered .php file to compute coverage, and Sparxstar2FAEnforcement.php
+         calls add_action() at file scope (its last line), as a WordPress plugin
+         entry point should. Loaded outside WordPress, with Brain Monkey torn
+         down, that is a fatal "Call to undefined function add_action()" during
+         report generation, which fails the job after the tests themselves pass. -->
+    <coverage processUncoveredFiles="false">
         <include>
             <directory suffix=".php">./</directory>
         </include>
