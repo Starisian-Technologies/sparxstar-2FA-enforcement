@@ -4,9 +4,9 @@ permissions:
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ universe, main, develop ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ universe, main, develop ]
 
 jobs:
   test:
